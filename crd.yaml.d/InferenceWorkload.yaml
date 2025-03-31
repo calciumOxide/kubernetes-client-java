@@ -1,0 +1,66 @@
+apiVersion: jianshu.didiglobal.com/v1alpha1
+kind: InferenceWorkload
+metadata:
+  name: k8s-sv0-workload
+  namespace: jianshu-serving-ns
+spec:
+  groups: 3
+  runtime:
+    name: vLLM
+    params:
+      - name: TensorParallelism
+        value: 8
+      - name: PipelineParallelism
+        value: 4
+      - name: MaxNumberSequences
+        value: 24
+      - name: MaxModelLength
+        value: 65536
+      - name: GPUMemoryUtilization
+        value: 0.85
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  policies:
+    - event: PodCreated
+      action: Parallel
+    - event: PodEvicted
+      action: RecreateGroup
+    - event: PodFailed
+      action: RecreateGroup
+  topologyPolicy: Spread
+  roles:
+    - master:
+        replicas: 1
+        template:
+          spec:
+            containers:
+              - name: k8s-sv0-workload-pod0-container
+                image: nginx:latest
+                ports:
+                  - containerPort: 80
+                resources:
+                  limits:
+                    cpu: 1
+                    memory: 1Gi
+                  requests:
+                    cpu: 0.5
+                    memory: 512Mi
+    - worker:
+        replicas: 3
+        template:
+          spec:
+            containers:
+              - name: k8s-sv0-workload-pod1-container
+                image: nginx:latest
+                ports:
+                  - containerPort: 80
+                resources:
+                  limits:
+                    cpu: 1
+                    memory: 1Gi
+                  requests:
+                    cpu: 0.5
+                    memory: 512Mi
