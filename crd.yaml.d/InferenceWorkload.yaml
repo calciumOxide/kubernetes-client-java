@@ -1,4 +1,4 @@
-apiVersion: jianshu.didiglobal.com/v1alpha1
+apiVersion: j_ian_sh_u.di_d_igl_ob_al.com/v1alpha1
 kind: InferenceWorkload
 metadata:
   name: k8s-sv0-workload
