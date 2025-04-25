@@ -16,8 +16,8 @@ on:
         description: 'The prefix of the target CRDs api group to generate. (Optional)'
 
 env:
-  IMAGE_NAME: ghcr.io/kubernetes-client/java/crd-model-gen
-  IMAGE_TAG: v1.0.6
+  IMAGE_NAME: docker.io/apecloud/crd-model-gen
+  IMAGE_TAG: v1.0.7
   GEN_DIR: crd-gen
 
 permissions:
